@@ -16,7 +16,33 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Victor Camara — Génie Informatique" />
   <meta name="twitter:description" content="Étudiant passionné par la cybersécurité, le Big Data et l'IA générative." />
+  <!-- ============================================================
+       FAVICON
+  ============================================================ -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e6fff'/><text y='72' x='50' text-anchor='middle' font-size='58' font-family='monospace' fill='white'>VC</text></svg>" />
+
+  <!-- ============================================================
+       PWA — Progressive Web App
+  ============================================================ -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2563EB" />
+
+  <!-- iOS / Safari : installation en plein écran -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Victor Portfolio" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png" />
+
+  <!-- Android / Chrome -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="Victor Portfolio" />
+
+  <!-- Microsoft / Edge tiles -->
+  <meta name="msapplication-TileColor" content="#2563EB" />
+  <meta name="msapplication-TileImage" content="assets/icons/icon-192.png" />
+  <meta name="msapplication-config" content="none" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -151,6 +177,21 @@
     .photo-ph { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; background: linear-gradient(135deg,#162966,#0f3060); }
     @keyframes spinRing { to { transform: rotate(360deg); } }
     @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-11px); } }
+    @keyframes pulseInstall {
+      0%, 100% { box-shadow: 0 4px 18px rgba(56,189,248,.35); transform: scale(1); }
+      50%      { box-shadow: 0 4px 28px rgba(56,189,248,.6);  transform: scale(1.03); }
+    }
+
+    /* ---- iOS install hint banner (manual instructions, Safari has no native prompt) ---- */
+    #ios-install-hint {
+      position: fixed; left: 16px; right: 16px; bottom: 16px;
+      z-index: 1000; background: #fff; border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: 0 12px 40px rgba(13,31,78,.18);
+      padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+      transform: translateY(140%); transition: transform .4s cubic-bezier(.4,0,.2,1);
+    }
+    #ios-install-hint.show { transform: translateY(0); }
+    @media(min-width:480px) { #ios-install-hint { left: auto; right: 20px; bottom: 20px; max-width: 340px; } }
 
     /* ---- Hero stat box ---- */
     .hstat { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 13px 18px; text-align: center; backdrop-filter: blur(8px); }
@@ -343,6 +384,16 @@
           <a href="https://www.linkedin.com/in/victor-camara-2818a3352" target="_blank" rel="noopener" class="btn-g" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:#fff">
             <i class="fab fa-linkedin-in"></i> LinkedIn
           </a>
+        </div>
+
+        <!-- Bouton d'installation PWA — masqué par défaut, affiché par JS si installable -->
+        <div id="pwa-install-wrap" class="hidden mt-4 flex justify-center lg:justify-start rv d4">
+          <button id="pwa-install-btn" type="button"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
+            style="background:linear-gradient(135deg,#38bdf8,#1e6fff);color:#fff;border:1px solid rgba(255,255,255,.25);box-shadow:0 4px 18px rgba(56,189,248,.35);font-family:'Syne',sans-serif;animation:pulseInstall 2.2s ease-in-out infinite">
+            <i class="fas fa-mobile-screen-button"></i>
+            Installer l'application
+          </button>
         </div>
 
         <!-- Stats -->
@@ -895,7 +946,7 @@
             <span class="stag">Compétence 1</span>
             <span class="stag">Compétence 2</span>
           </div>
-          <a href="assets/cv/certificat.pdf" target="_blank"
+          <a href="assets/cv/CV_Victor_Camara.pdf" target="_blank"
              class="mt-4 inline-flex items-center gap-2 text-sm font-medium" style="color:var(--electric)">
             <i class="fas fa-file-pdf"></i> Voir le certificat
           </a>
@@ -1125,6 +1176,26 @@
 
 <!-- Back to top -->
 <button id="btt" aria-label="Retour en haut"><i class="fas fa-chevron-up text-sm"></i></button>
+
+<!-- ============================================================
+     BANNIÈRE D'INSTALLATION iOS / SAFARI
+     Safari n'a pas d'invite native « Ajouter à l'écran d'accueil »
+     déclenchable par JS — on affiche donc des instructions manuelles.
+============================================================ -->
+<div id="ios-install-hint" role="dialog" aria-label="Installer l'application">
+  <div style="width:42px;height:42px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1e6fff,#38bdf8)">
+    <i class="fas fa-mobile-screen-button text-white"></i>
+  </div>
+  <div style="flex:1">
+    <p class="font-display font-bold text-sm" style="color:var(--text-h)">Installer l'application</p>
+    <p class="text-xs leading-snug mt-0.5" style="color:var(--text-m)">
+      Appuyez sur <i class="fas fa-arrow-up-from-bracket" style="color:var(--electric)"></i> puis « Sur l'écran d'accueil »
+    </p>
+  </div>
+  <button id="ios-hint-close" aria-label="Fermer" style="background:none;border:none;color:var(--text-m);cursor:pointer;padding:4px">
+    <i class="fas fa-xmark"></i>
+  </button>
+</div>
 
 
 <!-- ======================================================
@@ -1361,6 +1432,101 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
+
+/* ================================================================
+   PWA — Enregistrement du Service Worker + Bouton d'installation
+================================================================ */
+(function () {
+  'use strict';
+
+  /* ---- 1. Enregistrer le Service Worker ---- */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(function (reg) {
+          console.log('[PWA] Service Worker enregistré, scope :', reg.scope);
+        })
+        .catch(function (err) {
+          console.warn('[PWA] Échec d\'enregistrement du Service Worker :', err);
+        });
+    });
+  }
+
+  /* ---- 2. Détection : déjà installée ? ---- */
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true; /* iOS Safari */
+  }
+
+  /* ---- 3. Android / Chrome / Edge / Samsung Internet : invite native ---- */
+  var deferredPrompt = null;
+  var installWrap = document.getElementById('pwa-install-wrap');
+  var installBtn  = document.getElementById('pwa-install-btn');
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();          /* empêche la mini-infobar automatique */
+    deferredPrompt = e;
+    if (!isStandalone() && installWrap) {
+      installWrap.classList.remove('hidden');
+    }
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener('click', function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function (choice) {
+        if (choice.outcome === 'accepted') {
+          console.log('[PWA] Installation acceptée par l\'utilisateur');
+        } else {
+          console.log('[PWA] Installation refusée par l\'utilisateur');
+        }
+        deferredPrompt = null;
+        installWrap.classList.add('hidden');
+      });
+    });
+  }
+
+  /* Masquer le bouton une fois l'app installée (tous navigateurs) */
+  window.addEventListener('appinstalled', function () {
+    if (installWrap) installWrap.classList.add('hidden');
+    var iosHint = document.getElementById('ios-install-hint');
+    if (iosHint) iosHint.classList.remove('show');
+    console.log('[PWA] Application installée avec succès 🎉');
+  });
+
+  /* ---- 4. iOS / Safari : pas d'invite native → bannière d'instructions ---- */
+  function isIos() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); /* iPadOS */
+  }
+
+  function isSafari() {
+    var ua = window.navigator.userAgent;
+    return /safari/i.test(ua) && !/crios|fxios|chrome|android/i.test(ua);
+  }
+
+  if (isIos() && isSafari() && !isStandalone()) {
+    var seenKey = 'pwa-ios-hint-dismissed';
+    var alreadyDismissed = false;
+    try { alreadyDismissed = sessionStorage.getItem(seenKey) === '1'; } catch (e) {}
+
+    if (!alreadyDismissed) {
+      var hint = document.getElementById('ios-install-hint');
+      var closeBtn = document.getElementById('ios-hint-close');
+      setTimeout(function () {
+        if (hint) hint.classList.add('show');
+      }, 2500);
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          hint.classList.remove('show');
+          try { sessionStorage.setItem(seenKey, '1'); } catch (e) {}
+        });
+      }
+    }
+  }
+
+})(); /* fin logique PWA */
 </script>
 </body>
 </html>
